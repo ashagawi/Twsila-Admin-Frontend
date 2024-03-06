@@ -1,0 +1,132 @@
+<div class="container-fluid ">
+    <!-- <header class="mt-3"><img src="../../assets/img/twsel.svg" class="logo"></header> -->
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8 text-center">
+            <h1>{{title}}</h1>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+    <form *ngIf="!loading" [formGroup]="Addform" (ngSubmit)="onSubmit()">
+        <div *ngIf="message" [class]="className">{{message}}</div>
+        <!-- firstName -->
+        <div class="row">
+            <div class="mb-3 col">
+                <label class="form-label">First Name</label>
+                <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+                <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                    <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                </div>
+            </div>
+
+            <!-- lastName -->
+
+            <div class="mb-3 col">
+                <label class="form-label">Last Name</label>
+                <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+                <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                    <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+                </div>
+            </div>
+        </div>
+        <!-- E-mail -->
+        <div class="row">
+            <div class="mb-3 col">
+                <label class="form-label">E-mail</label>
+                <input type="email" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                    <div *ngIf="f.email.errors.required">E-mail is required</div>
+                </div>
+            </div>
+
+            <!-- Mobile -->
+
+            <div class="mb-3 col">
+                <label class="form-label">Mobile</label>
+                <input type="text" formControlName="mobile" class="form-control" (keypress)="isNumberKey($event)" [ngClass]="{ 'is-invalid': submitted && f.mobile.errors }" />
+                <div *ngIf="submitted && f.mobile.errors" class="invalid-feedback">
+                    <div *ngIf="f.mobile.errors.required">mobile is required</div>
+                </div>
+            </div>
+        </div>
+        <!-- Roles -->
+        <div class="row">
+            <div class="mb-3 col">
+                <label class="form-label">
+        Roles
+      </label>
+                <!-- <p-dropdown [options]="privilegeList"
+      (onChange)="mapArray($event)"
+      optionLabel="value"
+      optionValue="id"
+      [ngClass]="{ 'is-invalid': submitted && f.roles.errors }"
+       formControlName="roles">
+      </p-dropdown> -->
+                <select #rolesOPT pSelectForm controlId="roles" class="form-control" (change)="addRole(rolesOPT.value)" formControlName="roles">
+        <option style="color: grey;" aria-readonly="true"> select privilege </option>
+        <ng-container *ngFor="let privilege of privilegeList">
+          <option *ngIf="privilege?.display"  [value]="privilege?.id" >{{privilege?.value}}</option>
+        </ng-container>
+      </select>
+
+                <div *ngIf="submitted && f.roles.errors" class="invalid-feedback">
+                    <div *ngIf="f.roles.errors.required">Roles is required</div>
+                </div>
+            </div>
+        </div>
+        <!-- Password -->
+        <div class="row">
+            <div class="mb-3 col">
+                <label class="form-label">
+          Password
+        </label>
+                <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                    <div *ngIf="f.password.errors.required">Password is required</div>
+                    <div *ngIf="f.password.errors.minlength">Password must be at least 8 characters</div>
+                </div>
+            </div>
+        </div>
+        <!--privilege table-->
+        <p-table *ngIf="selectedPrivilegeList?.length > 0" [value]="selectedPrivilegeList" [paginator]="true" [rows]="4">
+            <ng-template pTemplate="header" [sortable]="true">
+                <tr>
+                    <th class="header-col">roles</th>
+                    <th class="header-col"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td>{{ item.value }}</td>
+                    <td>
+                        <svg (click)="removeRole(item)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-circle" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                </svg>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <!---->
+        <div class="row">
+            <div class="mb-3 text-center">
+                <button [disabled]="submitting || Addform.invalid" class="btn btn-primary login-btn">
+        <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
+        Create Account
+      </button>
+                <!-- <div>
+        <small>
+          Do you have an account <a routerLink="/account/login">login</a>
+        </small>
+      </div> -->
+
+                <a routerLink="/" class="btn btn-danger cancel-btn">Cancel</a>
+            </div>
+        </div>
+    </form>
+    <div *ngIf="loading" class="text-center m-5">
+        <span class="spinner-border spinner-border-lg align-center"></span>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+<div>
+  <ng-container *ngIf="roles?.length == 0">
+    <p class="text-center"><b> No Roles Assigned</b></p>
+  </ng-container>
+  <ng-container class="text-center" *ngIf="roles?.length > 0">
+    <ul *ngFor="let role of roles">
+      <li> <b>{{role?.name}} </b> </li>
+    </ul>
+  </ng-container>
+</div>
